@@ -17,27 +17,24 @@ class Product
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $label;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column(type: 'string', length: 255)]
+    private $image;
+
+    #[ORM\Column(type: 'datetime_immutable')]
     private $created_at;
 
-    #[ORM\Column(type: 'boolean')]
-    private $status;
-
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
-
-    #[ORM\OneToOne(targetEntity: Image::class, cascade: ['persist', 'remove'])]
-    private $photo_id;
-
-    #[ORM\OneToMany(mappedBy: 'product_id', targetEntity: Price::class, orphanRemoval: true)]
-    private $prices;
+    private $status;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    private $category_id;
+    private $category;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Price::class)]
+    private $prices;
 
     public function __construct()
     {
@@ -61,6 +58,18 @@ class Product
         return $this;
     }
 
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
@@ -73,38 +82,26 @@ class Product
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getCategory(): ?Category
     {
-        return $this->description;
+        return $this->category;
     }
 
-    public function setDescription(string $description): self
+    public function setCategory(?Category $category): self
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPhotoId(): ?Image
-    {
-        return $this->photo_id;
-    }
-
-    public function setPhotoId(?Image $photo_id): self
-    {
-        $this->photo_id = $photo_id;
+        $this->category = $category;
 
         return $this;
     }
@@ -121,7 +118,7 @@ class Product
     {
         if (!$this->prices->contains($price)) {
             $this->prices[] = $price;
-            $price->setProductId($this);
+            $price->setProduct($this);
         }
 
         return $this;
@@ -131,22 +128,10 @@ class Product
     {
         if ($this->prices->removeElement($price)) {
             // set the owning side to null (unless already changed)
-            if ($price->getProductId() === $this) {
-                $price->setProductId(null);
+            if ($price->getProduct() === $this) {
+                $price->setProduct(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCategoryId(): ?Category
-    {
-        return $this->category_id;
-    }
-
-    public function setCategoryId(?Category $category_id): self
-    {
-        $this->category_id = $category_id;
 
         return $this;
     }

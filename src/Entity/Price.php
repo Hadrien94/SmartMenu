@@ -20,10 +20,10 @@ class Price
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'prices')]
     #[ORM\JoinColumn(nullable: false)]
-    private $product_id;
+    private $product;
 
-    #[ORM\OneToOne(targetEntity: Format::class, cascade: ['persist', 'remove'])]
-    private $format_id;
+    #[ORM\ManyToOne(targetEntity: Format::class, inversedBy: 'prices')]
+    private $format;
 
     public function getId(): ?int
     {
@@ -42,26 +42,26 @@ class Price
         return $this;
     }
 
-    public function getProductId(): ?Product
+    public function getProduct(): ?Product
     {
-        return $this->product_id;
+        return $this->product;
     }
 
-    public function setProductId(?Product $product_id): self
+    public function setProduct(?Product $product): self
     {
-        $this->product_id = $product_id;
+        $this->product = $product;
 
         return $this;
     }
 
-    public function getFormatId(): ?Format
+    public function getFormat(): ?Format
     {
-        return $this->format_id;
+        return $this->format;
     }
 
-    public function setFormatId(?Format $format_id): self
+    public function setFormat(?Format $format): self
     {
-        $this->format_id = $format_id;
+        $this->format = $format;
 
         return $this;
     }

@@ -17,10 +17,10 @@ class Institution
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $route;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -29,26 +29,23 @@ class Institution
     #[ORM\Column(type: 'string', length: 255)]
     private $address;
 
-    #[ORM\Column(type: 'string', length: 5)]
+    #[ORM\Column(type: 'integer', length: 5)]
     private $zipcode;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $city;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $phone;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $website;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'institutions')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user_id;
+    private $user;
 
-    #[ORM\OneToOne(targetEntity: Image::class, cascade: ['persist', 'remove'])]
-    private $logo_id;
-
-    #[ORM\OneToMany(mappedBy: 'instit_id', targetEntity: Category::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'institution', targetEntity: Category::class)]
     private $categories;
 
     public function __construct()
@@ -109,12 +106,12 @@ class Institution
         return $this;
     }
 
-    public function getZipcode(): ?string
+    public function getZipcode(): ?int
     {
         return $this->zipcode;
     }
 
-    public function setZipcode(string $zipcode): self
+    public function setZipcode(int $zipcode): self
     {
         $this->zipcode = $zipcode;
 
@@ -138,7 +135,7 @@ class Institution
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPhone(string $phone): self
     {
         $this->phone = $phone;
 
@@ -150,33 +147,21 @@ class Institution
         return $this->website;
     }
 
-    public function setWebsite(?string $website): self
+    public function setWebsite(string $website): self
     {
         $this->website = $website;
 
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    public function getLogoId(): ?Image
-    {
-        return $this->logo_id;
-    }
-
-    public function setLogoId(?Image $logo_id): self
-    {
-        $this->logo_id = $logo_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -193,7 +178,7 @@ class Institution
     {
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
-            $category->setInstitId($this);
+            $category->setInstitution($this);
         }
 
         return $this;
@@ -203,8 +188,8 @@ class Institution
     {
         if ($this->categories->removeElement($category)) {
             // set the owning side to null (unless already changed)
-            if ($category->getInstitId() === $this) {
-                $category->setInstitId(null);
+            if ($category->getInstitution() === $this) {
+                $category->setInstitution(null);
             }
         }
 

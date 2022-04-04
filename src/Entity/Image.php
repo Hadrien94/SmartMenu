@@ -15,14 +15,14 @@ class Image
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
-
-    #[ORM\Column(type: 'string', length: 10)]
-    private $type;
 
     #[ORM\Column(type: 'integer')]
     private $size;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $type;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $description;
@@ -30,7 +30,7 @@ class Image
     #[ORM\Column(type: 'blob')]
     private $img_blob;
 
-    #[ORM\Column(type: 'string', length: 30)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $role;
 
     public function getId(): ?int
@@ -50,18 +50,6 @@ class Image
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getSize(): ?int
     {
         return $this->size;
@@ -70,6 +58,18 @@ class Image
     public function setSize(int $size): self
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

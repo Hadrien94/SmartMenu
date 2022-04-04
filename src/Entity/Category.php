@@ -17,42 +17,31 @@ class Category
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'datetime_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private $created_at;
-
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $description;
-
-    #[ORM\OneToMany(mappedBy: 'category_id', targetEntity: Product::class)]
-    private $products;
+    #[ORM\Column(type: 'datetime_immutable', options: ['CURRENT_TIMESTAMP'])]
+    private $created_at;
 
     #[ORM\ManyToOne(targetEntity: Institution::class, inversedBy: 'categories')]
     #[ORM\JoinColumn(nullable: false)]
-    private $instit_id;
+    private $institution;
+
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Format::class)]
+    private $formats;
+
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
+    private $products;
 
     public function __construct()
     {
+        $this->formats = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -67,14 +56,56 @@ class Category
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->description;
+        return $this->created_at;
     }
 
-    public function setDescription(?string $description): self
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
     {
-        $this->description = $description;
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getInstitution(): ?Institution
+    {
+        return $this->institution;
+    }
+
+    public function setInstitution(?Institution $institution): self
+    {
+        $this->institution = $institution;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Format[]
+     */
+    public function getFormats(): Collection
+    {
+        return $this->formats;
+    }
+
+    public function addFormat(Format $format): self
+    {
+        if (!$this->formats->contains($format)) {
+            $this->formats[] = $format;
+            $format->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFormat(Format $format): self
+    {
+        if ($this->formats->removeElement($format)) {
+            // set the owning side to null (unless already changed)
+            if ($format->getCategory() === $this) {
+                $format->setCategory(null);
+            }
+        }
 
         return $this;
     }
@@ -91,7 +122,7 @@ class Category
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->setCategoryId($this);
+            $product->setCategory($this);
         }
 
         return $this;
@@ -101,22 +132,10 @@ class Category
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
-            if ($product->getCategoryId() === $this) {
-                $product->setCategoryId(null);
+            if ($product->getCategory() === $this) {
+                $product->setCategory(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getInstitId(): ?Institution
-    {
-        return $this->instit_id;
-    }
-
-    public function setInstitId(?Institution $instit_id): self
-    {
-        $this->instit_id = $instit_id;
 
         return $this;
     }
