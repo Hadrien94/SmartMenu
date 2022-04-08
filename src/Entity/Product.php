@@ -20,7 +20,7 @@ class Product
     #[ORM\Column(type: 'string', length: 255)]
     private $label;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $image;
 
     #[ORM\Column(type: 'datetime_immutable')]

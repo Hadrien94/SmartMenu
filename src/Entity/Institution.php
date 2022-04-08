@@ -24,9 +24,6 @@ class Institution
     private $route;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $qrcode;
-
-    #[ORM\Column(type: 'string', length: 255)]
     private $address;
 
     #[ORM\Column(type: 'integer', length: 5)]
@@ -78,18 +75,6 @@ class Institution
     public function setRoute(string $route): self
     {
         $this->route = $route;
-
-        return $this;
-    }
-
-    public function getQrcode(): ?string
-    {
-        return $this->qrcode;
-    }
-
-    public function setQrcode(string $qrcode): self
-    {
-        $this->qrcode = $qrcode;
 
         return $this;
     }

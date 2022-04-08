@@ -2,68 +2,81 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $pseudo;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private $username;
+
+    #[ORM\Column(type: 'json')]
+    private $roles = [];
+
+    #[ORM\Column(type: 'string')]
+    private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $email;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $password;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Institution::class)]
-    private $institutions;
-
-    public function __construct()
-    {
-        $this->institutions = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPseudo(): ?string
+    public function getUsername(): ?string
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
-    public function setPseudo(string $pseudo): self
+    public function setUsername(string $username): self
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->email;
+        return (string) $this->username;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        $this->email = $email;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -76,31 +89,22 @@ class User
     }
 
     /**
-     * @return Collection|Institution[]
+     * @see UserInterface
      */
-    public function getInstitutions(): Collection
+    public function eraseCredentials()
     {
-        return $this->institutions;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
-    public function addInstitution(Institution $institution): self
+    public function getEmail(): ?string
     {
-        if (!$this->institutions->contains($institution)) {
-            $this->institutions[] = $institution;
-            $institution->setUser($this);
-        }
-
-        return $this;
+        return $this->email;
     }
 
-    public function removeInstitution(Institution $institution): self
+    public function setEmail(string $email): self
     {
-        if ($this->institutions->removeElement($institution)) {
-            // set the owning side to null (unless already changed)
-            if ($institution->getUser() === $this) {
-                $institution->setUser(null);
-            }
-        }
+        $this->email = $email;
 
         return $this;
     }
