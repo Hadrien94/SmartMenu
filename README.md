@@ -16,7 +16,7 @@ cd BackendSmartMenu
 Installation
 ------------
 
-* [Install Symfony Cli][4] and [Composer][].
+* [Install Symfony Cli][4] and [Composer][30].
 * PHP 8.*
 
 Clone repository
@@ -127,3 +127,4 @@ and supported by [Symfony contributors][19].
 [27]: https://symfony.com/backers
 [28]: https://sensiolabs.com/
 [29]: https://symfony.com/sponsor
+[30]: https://getcomposer.org/download/
