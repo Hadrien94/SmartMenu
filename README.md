@@ -6,13 +6,51 @@
 of reusable **PHP components**. Symfony is used by thousands of web
 applications and most of the [popular PHP projects][2].
 
+Clone repository
+------------
+```
+git clone https://github.com/asthino/BackendSmartMenu.git
+cd BackendSmartMenu
+```
+
 Installation
 ------------
 
-* [Install Symfony][4] with Composer (see [requirements details][3]).
-* Symfony follows the [semantic versioning][5] strictly, publishes "Long Term
-  Support" (LTS) versions and has a [release process][6] that is predictable and
-  business-friendly.
+* [Install Symfony Cli][4] and [Composer][].
+* PHP 8.*
+
+Clone repository
+------------
+```
+git clone https://github.com/asthino/BackendSmartMenu.git
+cd BackendSmartMenu
+```
+
+Configuration
+-------------
+* Duplicate the .env.local file and rename it to .env 
+* Change the variable DATABASE_URL with your mysql configuration.
+```
+composer install
+```
+* Create database
+```
+symfony console doctrine:database:create
+```
+* Load migrations
+```
+symfony console doctrine:migrations:migrate
+```
+* Load fixtures
+```
+symfony console doctrine:fixtures:load
+```
+
+Run server
+----------
+```
+symfony server:start
+```
 
 Sponsor
 -------
@@ -64,7 +102,7 @@ and supported by [Symfony contributors][19].
 [1]: https://symfony.com
 [2]: https://symfony.com/projects
 [3]: https://symfony.com/doc/current/reference/requirements.html
-[4]: https://symfony.com/doc/current/setup.html
+[4]: https://symfony.com/download
 [5]: https://semver.org
 [6]: https://symfony.com/doc/current/contributing/community/releases.html
 [7]: https://symfony.com/doc/current/page_creation.html
